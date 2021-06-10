@@ -16,6 +16,12 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     })
 }
 
+struct Materials {
+    head_material: Handle<ColorMaterial>,
+    segment_material: Handle<ColorMaterial>,
+    food_material: Handle<ColorMaterial>,
+}
+
 #[derive(PartialEq, Copy, Clone)]
 enum Direction {
     Left,
@@ -75,11 +81,6 @@ struct SnakeSegment;
 struct SnakeSegments(Vec<Entity>);
 
 struct Food;
-struct Materials {
-    head_material: Handle<ColorMaterial>,
-    segment_material: Handle<ColorMaterial>,
-    food_material: Handle<ColorMaterial>,
-}
 
 struct GrowthEvent;
 
@@ -139,20 +140,6 @@ fn spawn_snake(
     ];
 }
 
-fn food_spwan(mut commands: Commands, materials: Res<Materials>) {
-    commands
-        .spawn_bundle(SpriteBundle {
-            material: materials.food_material.clone(),
-            ..Default::default()
-        })
-        .insert(Food)
-        .insert(Position {
-            x: (random::<f32>() * ARENA_WIDTH as f32) as i32,
-            y: (random::<f32>() * ARENA_HEIGHT as f32) as i32,
-        })
-        .insert(Size::square(0.8));
-}
-
 fn spawn_segment(
     mut commands: Commands,
     material: &Handle<ColorMaterial>,
@@ -167,6 +154,20 @@ fn spawn_segment(
         .insert(position)
         .insert(Size::square(0.65))
         .id()
+}
+
+fn food_spwan(mut commands: Commands, materials: Res<Materials>) {
+    commands
+        .spawn_bundle(SpriteBundle {
+            material: materials.food_material.clone(),
+            ..Default::default()
+        })
+        .insert(Food)
+        .insert(Position {
+            x: (random::<f32>() * ARENA_WIDTH as f32) as i32,
+            y: (random::<f32>() * ARENA_HEIGHT as f32) as i32,
+        })
+        .insert(Size::square(0.8));
 }
 
 // So the With type allows us to say “I want entities that have a snake head,
